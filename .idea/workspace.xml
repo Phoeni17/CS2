@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ad64979-a8c8-4092-a87d-d6871dc714c0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/PythonProject4.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="3ad64979-a8c8-4092-a87d-d6871dc714c0" name="Changes" comment="UI Login + đọc cảm biến độ ẩm qua Arduino">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI.py" beforeDir="false" afterPath="$PROJECT_DIR$/UI.py" afterDir="false" />
     </list>
@@ -72,6 +70,19 @@
       <option name="presentableId" value="Default" />
       <updated>1763104998782</updated>
     </task>
+    <task id="LOCAL-00001" summary="UI Login + đọc cảm biến độ ẩm qua Arduino">
+      <option name="closed" value="true" />
+      <created>1763222971569</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763222971569</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="UI Login + đọc cảm biến độ ẩm qua Arduino" />
+    <option name="LAST_COMMIT_MESSAGE" value="UI Login + đọc cảm biến độ ẩm qua Arduino" />
   </component>
 </project>
