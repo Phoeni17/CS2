@@ -178,38 +178,86 @@ def dashboard(previous_window):
 
     tk.Label(win, text="Dashboard", font=("Arial", 50), bg="white").pack(pady=50)
 
+    # Moisture button
     tk.Button(
         win,
         text="Moisture Window",
         font=("Arial", 22),
         width=20,
-        command=moisture_window
+        command=lambda: moisture_window(win)
     ).pack(pady=20)
 
+    # Doors button
     tk.Button(
+        win,
+        text="Doors",
+        font=("Arial", 22),
+        width=20,
+        command=lambda: doors_window(win)
+    ).pack(pady=20)
+
+    # Logout button at bottom-left using x and y
+    logout_btn = tk.Button(
         win,
         text="Logout",
         font=("Arial", 18),
         width=15,
         command=lambda: (win.destroy(), login_screen())
-    ).pack(pady=20)
+    )
+    # Position: 10 px from left, 20 px from bottom
+    logout_btn.place(x=10, y=WINDOW_H - 50)
 
 # -----------------------------
 # MOISTURE WINDOW
 # -----------------------------
-def moisture_window():
+def moisture_window(prev_win):
     global moisture_value, status_label
 
     moisture_value = tk.StringVar(value="---")
-
+    status_text = tk.StringVar(value="---")  # For Dry/Normal/Wet
     win = create_window("Moisture Sensor")
+    prev_win.withdraw()  # hide dashboard
 
     tk.Label(win, text="Moisture Sensor", font=("Arial", 40), bg="white").pack(pady=20)
 
-    tk.Label(win, text="Value:", font=("Arial", 28), bg="white").pack(pady=10)
+    # Frame to hold value + status side by side
+    frame = tk.Frame(win, bg="white")
+    frame.pack(pady=10)
 
-    tk.Label(win, textvariable=moisture_value, font=("Arial", 50), bg="white").pack()
+    # Moisture numeric value
+    val_label = tk.Label(frame, textvariable=moisture_value, font=("Arial", 50), bg="white")
+    val_label.pack(side="left", padx=20)
 
+    # Moisture status
+    status_label_local = tk.Label(frame, textvariable=status_text, font=("Arial", 40), bg="white")
+    status_label_local.pack(side="left", padx=20)
+
+    # Status logic updater
+    def update_status(*args):
+        try:
+            val = int(moisture_value.get())
+        except:
+            status_text.set("---")
+            status_label_local.config(fg="black")
+            return
+
+        if 0 <= val <= 80:
+            status_text.set("Dry")
+            status_label_local.config(fg="red")
+        elif 81 <= val <= 120:
+            status_text.set("Normal")
+            status_label_local.config(fg="green")
+        elif val >= 121:
+            status_text.set("Wet")
+            status_label_local.config(fg="blue")
+        else:
+            status_text.set("---")
+            status_label_local.config(fg="black")
+
+    # Trigger whenever moisture_value changes
+    moisture_value.trace_add("write", update_status)
+
+    # Arduino connection status
     status_label = tk.Label(win, text="Connecting...", font=("Arial", 18), bg="white")
     status_label.pack(pady=15)
 
@@ -217,10 +265,62 @@ def moisture_window():
 
     tk.Button(
         win, text="Back", font=("Arial", 18),
-        command=lambda: (disconnect(), win.destroy(), dashboard(win))
+        command=lambda: (disconnect(), win.destroy(), prev_win.deiconify())
     ).pack(pady=10)
 
     win.after(300, auto_connect)
+
+# -----------------------------
+# DOORS WINDOW
+# -----------------------------
+def doors_window(prev_win):
+    win = create_window("Doors Control")
+    prev_win.withdraw()  # hide dashboard
+
+    tk.Label(win, text="Doors Control", font=("Arial", 40), bg="white").pack(pady=20)
+
+    # Frame for radio buttons
+    radio_frame = tk.Frame(win, bg="white")
+    radio_frame.pack(pady=10)
+
+    selected = tk.StringVar(value="roof")  # default selection
+
+    tk.Radiobutton(radio_frame, text="Roof", variable=selected, value="roof", font=("Arial", 20), bg="white").pack(side="left", padx=20)
+    tk.Radiobutton(radio_frame, text="Door", variable=selected, value="door", font=("Arial", 20), bg="white").pack(side="left", padx=20)
+
+    # Indicator for open/close status
+    status_dict = {"roof": "Closed", "door": "Closed"}  # initial state
+    status_label = tk.Label(win, text=f"{selected.get().capitalize()} is {status_dict[selected.get()]}", font=("Arial", 24), bg="white")
+    status_label.pack(pady=20)
+
+    # Function to update indicator
+    def update_status():
+        status_label.config(text=f"{selected.get().capitalize()} is {status_dict[selected.get()]}")
+
+    # Open/Close functions
+    def open_item():
+        item = selected.get()
+        status_dict[item] = "Open"
+        update_status()
+        # Here you could add actual hardware control code
+
+    def close_item():
+        item = selected.get()
+        status_dict[item] = "Closed"
+        update_status()
+        # Here you could add actual hardware control code
+
+    # Buttons
+    btn_frame = tk.Frame(win, bg="white")
+    btn_frame.pack(pady=10)
+
+    tk.Button(btn_frame, text="Open", font=("Arial", 18), width=10, command=open_item).pack(side="left", padx=20)
+    tk.Button(btn_frame, text="Close", font=("Arial", 18), width=10, command=close_item).pack(side="left", padx=20)
+
+    # Back button
+    tk.Button(win, text="Back", font=("Arial", 18), command=lambda: (win.destroy(), prev_win.deiconify())).pack(pady=30)
+
+
 
 # -----------------------------
 # MAIN
