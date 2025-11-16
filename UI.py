@@ -187,6 +187,15 @@ def dashboard(previous_window):
         command=lambda: moisture_window(win)
     ).pack(pady=20)
 
+    # Watering button
+    tk.Button(
+        win,
+        text="Watering",
+        font=("Arial", 22),
+        width=20,
+        command=lambda: watering_window(win)
+    ).pack(pady=20)
+
     # Doors button
     tk.Button(
         win,
@@ -320,6 +329,45 @@ def doors_window(prev_win):
     # Back button
     tk.Button(win, text="Back", font=("Arial", 18), command=lambda: (win.destroy(), prev_win.deiconify())).pack(pady=30)
 
+# -----------------------------
+# WATERING WINDOW
+# -----------------------------
+def watering_window(prev_win):
+    win = create_window("Watering System")
+    prev_win.withdraw()
+
+    tk.Label(win, text="Watering System", font=("Arial", 40), bg="white").pack(pady=30)
+
+    # Dropdown menu (combobox)
+    tk.Label(win, text="Water Amount:", font=("Arial", 22), bg="white").pack(pady=10)
+
+    amount = tk.StringVar(value="light")  # default value
+
+    dropdown = tk.OptionMenu(win, amount, "light", "moderate", "heavy")
+    dropdown.config(font=("Arial", 20), width=10)
+    dropdown.pack(pady=10)
+
+    # Water button
+    def water_now():
+        messagebox.showinfo("Watering", f"Watering set to: {amount.get().capitalize()}")
+        # Here you can later add Arduino serial commands
+
+    tk.Button(
+        win,
+        text="Water",
+        font=("Arial", 22),
+        width=15,
+        command=water_now
+    ).pack(pady=30)
+
+    # Back button
+    tk.Button(
+        win,
+        text="Back",
+        font=("Arial", 18),
+        width=15,
+        command=lambda: (win.destroy(), prev_win.deiconify())
+    ).pack(pady=20)
 
 
 # -----------------------------
